@@ -8,10 +8,6 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -36,7 +32,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -109,3 +105,43 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/april/lib
 #source /opt/ros/fuerte/setup.bash
 #source ~/fuerte_workspace/setup.bash
 source /opt/ros/hydro/setup.bash
+
+#colors manpages
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+# default editor
+export EDITOR=emacs
+
+#I often miss type emacs so this is to fix that
+alias meacs='emacs'
+alias eamcs='emacs'
+alias emcas='emacs'
+alias emasa='emacs'
+alias emasc='emacs'
+alias macs='emacs'
+alias eacs='emacs'
+alias emcs='emacs'
+alias emas='emacs'
+alias emac='emacs'
+
+#sets up history
+shopt -s histappend
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+HISTIGNORE='ls:bg:fg:history'
+HISTIGNORE=ignoreboth
+HISTTIMEFORMAT='%F %T '
+PROMPT_COMMAND='history -a'
+
+#sets autocomplete to work on a single tab
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
+#sets text to display on start up 
+cat ~/work/Config/bashHeader.txt
