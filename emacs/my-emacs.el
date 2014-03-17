@@ -1,3 +1,12 @@
+;; allows for easy lisp error checking inside this file
+(setq debug-on-error t)
+
+;;messages for debugging emacs status
+(print "loading my-emacs.el\n")
+(setq path (file-name-directory load-file-name))
+(print "the my-emacs.el file is being loaded form\n")
+(print path)
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -14,10 +23,10 @@
  )
 
   ;; sets location where config files are stored
-(add-to-list 'load-path "auto-complete")
-(add-to-list 'load-path "")
-(add-to-list 'load-path "yasnippet")
- 
+(add-to-list 'load-path (concat path "/auto-complete"))
+(add-to-list 'load-path path)
+(add-to-list 'load-path (concat path "/yasnippet"))
+
 (global-linum-mode 1)
 ;; sets verticale bar at 80 chars
 (require 'fill-column-indicator)
@@ -25,27 +34,27 @@
 (setq fci-rule-color "darkblue")
 (setq fci-rule-column 80)
 
-;; sets up cmake file 
+;; sets up cmake file
 (require 'cmake-mode)
-;; (cmake-mode 1)
+;;(cmake-mode 1) TODO fix
 
 ;; Ensure c/c++ mode for .h, .c, .cpp
 (require 'cc-mode)
 
 
-;;sets up auto code indentation 
+;;sets up auto code indentation
 (setq-default c-basic-offset 4 c-default-style "linux")
 (setq-default tab-width 4 indent-tabs-mode t)
 (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)
 
  ;; yasnippet (templated auto complete)
  ;; should be loaded before auto complete so that they can work together
-(require 'yasnippet)
-(yas-global-mode 1)
+;;(require 'yasnippet) TODO fix
+;;(yas-global-mode 1) TODO FIX
 
 ;; stuff for auto-complete
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-to-list 'ac-dictionary-directories (concat path "/auto-complete/dict"))
 (ac-config-default)
 
 ;;; set the trigger key so that it can work together with yasnippet on tab key,
@@ -55,13 +64,13 @@
   (ac-set-trigger-key "<tab>")
 
 ;;TODO get auto complete and yasnipperts to work tother
-;; (custom-set-variables
-;; '(ac-auto-start nil)
-;; '(ac-use-menu-map t)
-;; '(ac-trigger-key "TAB"))
+ (custom-set-variables
+ '(ac-auto-start nil)
+ '(ac-use-menu-map t)
+ '(ac-trigger-key "TAB"))
 
-;; hightlight uncommited code 
-;; (global-diff-hl-mode)
+;; hightlight uncommited code
+;;(global-diff-hl-mode) TODO fix
 
 
 ; roslaunch highlighting
