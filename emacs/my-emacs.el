@@ -5,6 +5,7 @@
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
  '(inhibit-startup-screen t))
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -26,9 +27,11 @@
 
 ;; sets up cmake file 
 (require 'cmake-mode)
+;; (cmake-mode 1)
 
 ;; Ensure c/c++ mode for .h, .c, .cpp
 (require 'cc-mode)
+
 
 ;;sets up auto code indentation 
 (setq-default c-basic-offset 4 c-default-style "linux")
@@ -60,4 +63,5 @@
 ;; hightlight uncommited code 
 ;; (global-diff-hl-mode)
 (provide 'my-emacs)
+
 
