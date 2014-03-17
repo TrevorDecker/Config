@@ -14,9 +14,9 @@
  )
 
   ;; sets location where config files are stored
-  (add-to-list 'load-path "~/work/Config/emacs")
-  (add-to-list 'load-path "~/.emacs.d/")
-  (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+(add-to-list 'load-path "auto-complete")
+(add-to-list 'load-path "")
+(add-to-list 'load-path "yasnippet")
  
 (global-linum-mode 1)
 ;; sets verticale bar at 80 chars
