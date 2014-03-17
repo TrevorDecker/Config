@@ -62,6 +62,12 @@
 
 ;; hightlight uncommited code 
 ;; (global-diff-hl-mode)
+
+
+; roslaunch highlighting
+(add-to-list 'auto-mode-alist '("\\.launch$" . xml-mode))
+
+
 (provide 'my-emacs)
 
 
