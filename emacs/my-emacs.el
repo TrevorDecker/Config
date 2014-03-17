@@ -1,11 +1,43 @@
 ;; allows for easy lisp error checking inside this file
 (setq debug-on-error t)
-
 ;;messages for debugging emacs status
 (print "loading my-emacs.el\n")
 (setq path (file-name-directory load-file-name))
 (print "the my-emacs.el file is being loaded form\n")
 (print path)
+
+;; Convient package handling in emacs
+(require 'package)
+;; use packages from marmalade
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; and the old elpa repo
+(add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/"))
+;; and automatically parsed versiontracking repositories.
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+;; Make sure a package is installed
+(defun package-require (package)
+  "Install a PACKAGE unless it is already installed 
+or a feature with the same name is already active.
+
+Usage: (package-require 'package)"
+  ; try to activate the package with at least version 0.
+  (package-activate package '(0))
+  ; try to just require the package. Maybe the user has it in his local config
+  (condition-case nil
+      (require package)
+    ; if we cannot require it, it does not exist, yet. So install it.
+    (error (package-install package))))
+
+;; Initialize installed packages
+(package-initialize)  
+;; package init not needed, since it is done anyway in emacs 24 after reading the init
+;; but we have to load the list of available packages
+(package-refresh-contents)
+
+
+
+
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -36,7 +68,7 @@
 
 ;; sets up cmake file
 (require 'cmake-mode)
-;;(cmake-mode 1) TODO fix
+;;(cmake-mode 1) ;;TODO fix
 
 ;; Ensure c/c++ mode for .h, .c, .cpp
 (require 'cc-mode)
@@ -49,8 +81,8 @@
 
  ;; yasnippet (templated auto complete)
  ;; should be loaded before auto complete so that they can work together
-;;(require 'yasnippet) TODO fix
-;;(yas-global-mode 1) TODO FIX
+(require 'yasnippet) ;;TODO fix
+(yas-global-mode 1) ;;TODO FIX
 
 ;; stuff for auto-complete
 (require 'auto-complete-config)
@@ -72,10 +104,71 @@
 ;; hightlight uncommited code
 ;;(global-diff-hl-mode) TODO fix
 
+;; for file and buffer completion 
+(require 'ido)
+(ido-mode t)
+
 
 ; roslaunch highlighting
 (add-to-list 'auto-mode-alist '("\\.launch$" . xml-mode))
 
+;;;;;;TODO fix printing and always print on local machine
+;;;; Convenient printing
+(require 'printing)
+(pr-update-menus t)
+;; make sure we use localhost as cups server
+(setenv "CUPS_SERVER" "localhost")
+(package-require 'cups)
+
+
+;; word wrapping
+(global-visual-line-mode t)
+
+; Use the system clipboard
+(setq x-select-enable-clipboard t)
+
+; save minibuffer history
+(require 'savehist)
+(savehist-mode t)
+
+; show recent files
+(package-require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 1000)
+
+;; Highlight TODO and FIXME in comments
+(package-require 'fic-ext-mode)
+(defun add-something-to-mode-hooks (mode-list something)
+  "helper function to add a callback to multiple hooks"
+  (dolist (mode mode-list)
+    (add-hook (intern (concat (symbol-name mode) "-mode-hook")) something)))
+
+(add-something-to-mode-hooks '(c++ tcl emacs-lisp python text markdown latex) 'fic-ext-mode)
+
+; save the place in files
+(require 'saveplace)
+(setq-default save-place t)
+
+; colored shell commands via C-!
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(defun babcore-shell-execute(cmd)
+  "Execute a shell command in an interactive shell buffer."
+   (interactive "sShell command: ")
+   (shell (get-buffer-create "*shell-commands-buf*"))
+   (process-send-string (get-buffer-process "*shell-commands-buf*") (concat cmd "\n")))
+(global-set-key (kbd "C-!") 'babcore-shell-execute)
+
+
+;; Flymake: On the fly syntax checking
+
+; stronger error display
+(defface flymake-message-face
+  '((((class color) (background light)) (:foreground "#b2dfff"))
+    (((class color) (background dark))  (:foreground "#b2dfff")))
+  "Flymake message face")
+
+; show the flymake errors in the minibuffer
+(package-require 'flymake-cursor)  
 
 (provide 'my-emacs)
 
