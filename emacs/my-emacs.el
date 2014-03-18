@@ -1,43 +1,11 @@
 ;; allows for easy lisp error checking inside this file
-(setq debug-on-error t)
+(setq install-mode nil) ;; only set to true when we are installing new packages
+(setq debug-on-error install-mode) ;; only need to debug when we are installing 
 ;;messages for debugging emacs status
 (print "loading my-emacs.el\n")
 (setq path (file-name-directory load-file-name))
 (print "the my-emacs.el file is being loaded form\n")
 (print path)
-
-;; Convient package handling in emacs
-(require 'package)
-;; use packages from marmalade
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-;; and the old elpa repo
-(add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/"))
-;; and automatically parsed versiontracking repositories.
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-
-;; Make sure a package is installed
-(defun package-require (package)
-  "Install a PACKAGE unless it is already installed 
-or a feature with the same name is already active.
-
-Usage: (package-require 'package)"
-  ; try to activate the package with at least version 0.
-  (package-activate package '(0))
-  ; try to just require the package. Maybe the user has it in his local config
-  (condition-case nil
-      (require package)
-    ; if we cannot require it, it does not exist, yet. So install it.
-    (error (package-install package))))
-
-;; Initialize installed packages
-(package-initialize)  
-;; package init not needed, since it is done anyway in emacs 24 after reading the init
-;; but we have to load the list of available packages
-(package-refresh-contents)
-
-
-
-
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -111,8 +79,35 @@ Usage: (package-require 'package)"
 
 ; roslaunch highlighting
 (add-to-list 'auto-mode-alist '("\\.launch$" . xml-mode))
+;; Convient package handling in emacs
+(require 'package)
+;; use packages from marmalade
+(if install-mode (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/")) nil)
+;; and the old elpa repo
+(if install-mode (add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/")) nil)
+;; and automatically parsed versiontracking repositories.
+(if install-mode (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/")) nil)
 
-;;;;;;TODO fix printing and always print on local machine
+;; Make sure a package is installed
+(defun package-require (package)
+  "Install a PACKAGE unless it is already installed 
+or a feature with the same name is already active.
+
+Usage: (package-require 'package)"
+  ; try to activate the package with at least version 0.
+  (package-activate package '(0))
+  ; try to just require the package. Maybe the user has it in his local config
+  (condition-case nil
+      (require package)
+    ; if we cannot require it, it does not exist, yet. So install it.
+    (error (package-install package))))
+
+;; Initialize installed packages
+(package-initialize)  
+;; package init not needed, since it is done anyway in emacs 24 after reading the init
+;; but we have to load the list of available packages
+(if install-mode package-refresh-contents nil)
+
 ;;;; Convenient printing
 (require 'printing)
 (pr-update-menus t)
@@ -159,7 +154,6 @@ Usage: (package-require 'package)"
 (global-set-key (kbd "C-!") 'babcore-shell-execute)
 
 
-;; Flymake: On the fly syntax checking
 
 ; stronger error display
 (defface flymake-message-face
