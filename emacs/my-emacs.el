@@ -1,3 +1,5 @@
+;; Writen by Trevor Decker tdecker@andrew.cmu.edu
+
 ;; allows for easy lisp error checking inside this file
 (setq install-mode nil) ;; only set to true when we are installing new packages
 (setq debug-on-error install-mode) ;; only need to debug when we are installing 
